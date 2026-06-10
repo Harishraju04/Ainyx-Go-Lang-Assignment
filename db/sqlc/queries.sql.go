@@ -7,7 +7,27 @@ package sqlc
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
+
+const createUser = `-- name: CreateUser :one
+INSERT INTO Users (name, dob)
+VALUES ($1,$2)
+RETURNING id, name, dob
+`
+
+type CreateUserParams struct {
+	Name string      `json:"name"`
+	Dob  pgtype.Date `json:"dob"`
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, createUser, arg.Name, arg.Dob)
+	var i User
+	err := row.Scan(&i.ID, &i.Name, &i.Dob)
+	return i, err
+}
 
 const getUsers = `-- name: GetUsers :many
 SELECT id, name, dob FROM Users
