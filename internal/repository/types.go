@@ -4,13 +4,19 @@ import (
 	"time"
 )
 
-type CreatUserInput struct {
+type CreateUserRequest struct {
 	Name string
 	Dob  time.Time
 }
 
-type CreateUserOutput struct {
+type User struct {
 	Id   int32
 	Name string
 	Dob  time.Time
+}
+
+type UpdateUserRequest struct {
+	Id   int32
+	Name *string
+	Dob  *time.Time
 }

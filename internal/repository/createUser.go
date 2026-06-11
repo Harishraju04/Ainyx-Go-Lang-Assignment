@@ -7,11 +7,11 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-func (repo *Repository) CreateUser(ctx context.Context, input *CreatUserInput) (*CreateUserOutput, error) {
+func (repo *Repository) CreateUser(ctx context.Context, req *CreateUserRequest) (*User, error) {
 	res, err := repo.q.CreateUser(ctx, sqlc.CreateUserParams{
-		Name: input.Name,
+		Name: req.Name,
 		Dob: pgtype.Date{
-			Time:  input.Dob,
+			Time:  req.Dob,
 			Valid: true,
 		},
 	})
@@ -20,7 +20,7 @@ func (repo *Repository) CreateUser(ctx context.Context, input *CreatUserInput) (
 		return nil, err
 	}
 
-	return &CreateUserOutput{
+	return &User{
 		Id:   res.ID,
 		Name: res.Name,
 		Dob:  res.Dob.Time,

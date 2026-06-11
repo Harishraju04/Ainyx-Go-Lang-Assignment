@@ -7,15 +7,17 @@ import (
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/repository"
 )
 
-func (svc *Service) CreateUser(ctx context.Context, req *CreateUserRequest) (*User, error) {
-	dob, err := ParseDate(req.Dob)
+func (svc *Service) UpdateUser(ctx context.Context, req *UpdateUserRequest) (*User, error) {
+	dob, err := ParseDate(*req.Dob)
 	if err != nil {
-		log.Printf("svc CreateUser: %s", err)
+		log.Printf("svc UpdateUser: %s", err)
 		return nil, err
 	}
-	res, err := svc.repo.CreateUser(ctx, &repository.CreateUserRequest{
+
+	res, err := svc.repo.UpdateUser(ctx, &repository.UpdateUserRequest{
+		Id:   req.Id,
 		Name: req.Name,
-		Dob:  dob,
+		Dob:  &dob,
 	})
 
 	if err != nil {
