@@ -29,6 +29,26 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const deleteUser = `-- name: DeleteUser :exec
+DELETE FROM users WHERE id = $1
+`
+
+func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, deleteUser, id)
+	return err
+}
+
+const getUserByID = `-- name: GetUserByID :one
+SELECT id, name, dob from Users WHERE id = $1
+`
+
+func (q *Queries) GetUserByID(ctx context.Context, id int32) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, id)
+	var i User
+	err := row.Scan(&i.ID, &i.Name, &i.Dob)
+	return i, err
+}
+
 const getUsers = `-- name: GetUsers :many
 SELECT id, name, dob FROM Users
 `
@@ -51,4 +71,50 @@ func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const listAllUsers = `-- name: ListAllUsers :many
+SELECT id, name, dob from Users
+`
+
+func (q *Queries) ListAllUsers(ctx context.Context) ([]User, error) {
+	rows, err := q.db.Query(ctx, listAllUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(&i.ID, &i.Name, &i.Dob); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateUser = `-- name: UpdateUser :one
+UPDATE Users
+SET 
+   name = COALESCE($1,name),
+   dob = COALESCE($2,dob)
+WHERE id = $3
+RETURNING id, name, dob
+`
+
+type UpdateUserParams struct {
+	Name pgtype.Text `json:"name"`
+	Dob  pgtype.Date `json:"dob"`
+	ID   int32       `json:"id"`
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUser, arg.Name, arg.Dob, arg.ID)
+	var i User
+	err := row.Scan(&i.ID, &i.Name, &i.Dob)
+	return i, err
 }

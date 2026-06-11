@@ -5,3 +5,20 @@ SELECT * FROM Users;
 INSERT INTO Users (name, dob)
 VALUES ($1,$2)
 RETURNING *;
+
+-- name: GetUserByID :one
+SELECT * from Users WHERE id = $1;
+
+-- name: UpdateUser :one
+UPDATE Users
+SET 
+   name = COALESCE(sqlc.narg('name'),name),
+   dob = COALESCE(sqlc.narg('dob'),dob)
+WHERE id = sqlc.arg('id')
+RETURNING *;
+
+-- name: DeleteUser :exec
+DELETE FROM users WHERE id = $1;
+
+-- name: ListAllUsers :many
+SELECT * from Users;
