@@ -5,8 +5,15 @@ type CreateUserRequest struct {
 	Dob  string
 }
 
-type CreateUserResponse struct {
+type User struct {
 	Id   int32
 	Name string
 	Dob  string
+	Age  *int32
+}
+
+type UpdateUserRequest struct {
+	Id   int32
+	Name *string
+	Dob  *string
 }
