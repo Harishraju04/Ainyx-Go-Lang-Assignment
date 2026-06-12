@@ -14,16 +14,15 @@ func (h *Handler) UpdateUser(c *fiber.Ctx) error {
 	idStr := c.Params("id")
 	id, err := strconv.ParseInt(idStr, 10, 32)
 	if err != nil || id <= 0 {
-		return c.Status(400).JSON(fiber.Map{"id": "invalid id"})
+		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
 	}
 
 	if err := c.BodyParser(&updateUser); err != nil {
-		return c.Status(400).JSON(fiber.Map{"body": "invalid body"})
+		return c.Status(400).JSON(fiber.Map{"error": "invalid body"})
 	}
 
 	if err := validator.Validate.Struct(&updateUser); err != nil {
-		errors := validator.FormatValidationErrors(err)
-		return c.Status(400).JSON(errors)
+		return handleError(c, err)
 	}
 
 	if updateUser.Name == nil && updateUser.Dob == nil {
@@ -37,7 +36,7 @@ func (h *Handler) UpdateUser(c *fiber.Ctx) error {
 	})
 
 	if err != nil {
-		return fiber.ErrInternalServerError
+		return handleError(c, err)
 	}
 
 	updateUserResponse := &User{

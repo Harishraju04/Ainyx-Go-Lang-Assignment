@@ -9,7 +9,7 @@ import (
 func (h *Handler) ListAllUsers(c *fiber.Ctx) error {
 	res, err := h.svc.ListAllUsers(c.Context())
 	if err != nil {
-		return fiber.ErrInternalServerError
+		return handleError(c, err)
 	}
 	return c.Status(http.StatusOK).JSON(res)
 }

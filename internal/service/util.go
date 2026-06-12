@@ -1,6 +1,9 @@
 package service
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 func CalculateAge(dob time.Time) *int32 {
 	now := time.Now()
@@ -18,5 +21,8 @@ func ParseDate(dob string) (time.Time, error) {
 		"2006-01-02",
 		dob,
 	)
-	return parsedDob, err
+	if err != nil {
+		return time.Time{}, errors.New("invalid date format")
+	}
+	return parsedDob, nil
 }

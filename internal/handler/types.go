@@ -13,6 +13,6 @@ type User struct {
 }
 
 type UpdateUserRequest struct {
-	Name *string `json:"name,omitempty" validate:"required,min=3,omitempty"`
-	Dob  *string `json:"dob,omitempty"  validate:"required,datetime=2006-01-02,omitempty"`
+	Name *string `json:"name,omitempty" validate:"omitempty,min=3"`
+	Dob  *string `json:"dob,omitempty"  validate:"omitempty,datetime=2006-01-02"`
 }

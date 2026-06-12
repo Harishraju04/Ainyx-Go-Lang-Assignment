@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/service"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/validator"
 	"github.com/gofiber/fiber/v2"
@@ -10,13 +12,11 @@ func (h *Handler) CreateUserHandler(c *fiber.Ctx) error {
 	var user CreateUserRequest
 
 	if err := c.BodyParser(&user); err != nil {
-		return c.Status(400).JSON("invalid body")
+		return c.Status(400).JSON(fiber.Map{"error": "invalid body"})
 	}
 
-	validationErr := validator.Validate.Struct(&user)
-	if validationErr != nil {
-		errors := validator.FormatValidationErrors(validationErr)
-		return c.Status(400).JSON(errors)
+	if err := validator.Validate.Struct(&user); err != nil {
+		return handleError(c, err)
 	}
 
 	res, err := h.svc.CreateUser(c.Context(), &service.CreateUserRequest{
@@ -24,7 +24,7 @@ func (h *Handler) CreateUserHandler(c *fiber.Ctx) error {
 		Dob:  user.Dob,
 	})
 	if err != nil {
-		return err
+		return handleError(c, err)
 	}
 
 	createUserResponse := &User{
@@ -33,5 +33,5 @@ func (h *Handler) CreateUserHandler(c *fiber.Ctx) error {
 		Dob:  res.Dob,
 	}
 
-	return c.JSON(createUserResponse)
+	return c.Status(http.StatusCreated).JSON(createUserResponse)
 }
