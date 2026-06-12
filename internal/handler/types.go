@@ -1,8 +1,8 @@
 package handler
 
 type CreateUserRequest struct {
-	Name string `json:"name"`
-	Dob  string `json:"dob"`
+	Name string `json:"name" validate:"required,min=3"`
+	Dob  string `json:"dob" validate:"required,datetime=2006-01-02"`
 }
 
 type User struct {
@@ -13,6 +13,6 @@ type User struct {
 }
 
 type UpdateUserRequest struct {
-	Name *string `json:"name,omitempty"`
-	Dob  *string `json:"dob,omitempty"`
+	Name *string `json:"name,omitempty" validate:"required,min=3,omitempty"`
+	Dob  *string `json:"dob,omitempty"  validate:"required,datetime=2006-01-02,omitempty"`
 }
