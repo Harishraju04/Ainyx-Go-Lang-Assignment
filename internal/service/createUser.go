@@ -5,9 +5,14 @@ import (
 	"log"
 
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/repository"
+	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/validator"
 )
 
 func (svc *Service) CreateUser(ctx context.Context, req *CreateUserRequest) (*User, error) {
+	if err := validator.Validate.Struct(req); err != nil {
+		return nil, err
+	}
+
 	dob, err := ParseDate(req.Dob)
 	if err != nil {
 		log.Printf("svc CreateUser: %s", err)

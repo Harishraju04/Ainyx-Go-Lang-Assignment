@@ -5,8 +5,8 @@ import (
 )
 
 type CreateUserRequest struct {
-	Name string
-	Dob  time.Time
+	Name string    `validate:"required,min=3"`
+	Dob  time.Time `validate:"required"`
 }
 
 type User struct {
@@ -16,7 +16,7 @@ type User struct {
 }
 
 type UpdateUserRequest struct {
-	Id   int32
-	Name *string
-	Dob  *time.Time
+	Id   int32      `validate:"required,gt=0"`
+	Name *string    `validate:"omitempty,min=3"`
+	Dob  *time.Time `validate:"omitempty"`
 }

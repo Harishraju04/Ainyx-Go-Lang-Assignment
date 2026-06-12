@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"net/http"
 	"strconv"
 
@@ -11,11 +10,11 @@ import (
 func (h *Handler) DeleteUser(c *fiber.Ctx) error {
 	idStr := c.Params("id")
 	id, err := strconv.ParseInt(idStr, 10, 32)
-	if err != nil {
-		return fiber.ErrBadRequest
+	if err != nil || id <= 0 {
+		return c.Status(400).JSON(fiber.Map{"id": "invalid id"})
 	}
-	Err := h.svc.DeleteUser(context.Background(), int32(id))
-	if Err != nil {
+
+	if err := h.svc.DeleteUser(c.Context(), int32(id)); err != nil {
 		return fiber.ErrInternalServerError
 	}
 

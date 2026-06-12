@@ -10,6 +10,7 @@ import (
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/repository"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/routes"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/service"
+	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/validator"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -18,6 +19,8 @@ func main() {
 
 	pool := db.InitDB(cfg.DBurl)
 	defer pool.Close()
+
+	validator.Init()
 
 	app := fiber.New()
 

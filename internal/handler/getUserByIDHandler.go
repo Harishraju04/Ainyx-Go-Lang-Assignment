@@ -9,9 +9,8 @@ import (
 func (h *Handler) GetUserByID(c *fiber.Ctx) error {
 	idStr := c.Params("id")
 	id, err := strconv.ParseInt(idStr, 10, 32)
-
-	if err != nil {
-		return fiber.ErrBadRequest
+	if err != nil || id <= 0 {
+		return c.Status(400).JSON(fiber.Map{"id": "invalid id"})
 	}
 
 	res, err := h.svc.GetUserByID(c.Context(), int32(id))

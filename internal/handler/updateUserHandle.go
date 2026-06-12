@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"log"
 	"strconv"
 
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/service"
+	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/validator"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -13,10 +13,21 @@ func (h *Handler) UpdateUser(c *fiber.Ctx) error {
 
 	idStr := c.Params("id")
 	id, err := strconv.ParseInt(idStr, 10, 32)
+	if err != nil || id <= 0 {
+		return c.Status(400).JSON(fiber.Map{"id": "invalid id"})
+	}
 
 	if err := c.BodyParser(&updateUser); err != nil {
-		log.Println(updateUser)
-		return fiber.ErrBadRequest
+		return c.Status(400).JSON(fiber.Map{"body": "invalid body"})
+	}
+
+	if err := validator.Validate.Struct(&updateUser); err != nil {
+		errors := validator.FormatValidationErrors(err)
+		return c.Status(400).JSON(errors)
+	}
+
+	if updateUser.Name == nil && updateUser.Dob == nil {
+		return c.Status(400).JSON(fiber.Map{"error": "at least one field must be provided"})
 	}
 
 	res, err := h.svc.UpdateUser(c.Context(), &service.UpdateUserRequest{

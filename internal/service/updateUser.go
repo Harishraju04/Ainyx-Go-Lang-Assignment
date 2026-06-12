@@ -2,22 +2,37 @@ package service
 
 import (
 	"context"
+	"errors"
 	"log"
+	"time"
 
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/repository"
+	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/validator"
 )
 
 func (svc *Service) UpdateUser(ctx context.Context, req *UpdateUserRequest) (*User, error) {
-	dob, err := ParseDate(*req.Dob)
-	if err != nil {
-		log.Printf("svc UpdateUser: %s", err)
+	if err := validator.Validate.Struct(req); err != nil {
 		return nil, err
+	}
+
+	if req.Name == nil && req.Dob == nil {
+		return nil, errors.New("at least one field must be provided")
+	}
+
+	var dob *time.Time
+	if req.Dob != nil {
+		parsedDob, err := ParseDate(*req.Dob)
+		if err != nil {
+			log.Printf("svc UpdateUser: %s", err)
+			return nil, err
+		}
+		dob = &parsedDob
 	}
 
 	res, err := svc.repo.UpdateUser(ctx, &repository.UpdateUserRequest{
 		Id:   req.Id,
 		Name: req.Name,
-		Dob:  &dob,
+		Dob:  dob,
 	})
 
 	if err != nil {
