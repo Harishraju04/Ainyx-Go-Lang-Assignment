@@ -11,6 +11,17 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countUsers = `-- name: CountUsers :one
+SELECT COUNT(*) FROM Users
+`
+
+func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, countUsers)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createUser = `-- name: CreateUser :one
 INSERT INTO Users (name, dob)
 VALUES ($1,$2)
@@ -55,6 +66,37 @@ SELECT id, name, dob FROM Users
 
 func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
 	rows, err := q.db.Query(ctx, getUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(&i.ID, &i.Name, &i.Dob); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getUsersPaginated = `-- name: GetUsersPaginated :many
+SELECT id, name, dob FROM Users
+ORDER BY id
+OFFSET $1 LIMIT $2
+`
+
+type GetUsersPaginatedParams struct {
+	Offset int32 `json:"offset"`
+	Limit  int32 `json:"limit"`
+}
+
+func (q *Queries) GetUsersPaginated(ctx context.Context, arg GetUsersPaginatedParams) ([]User, error) {
+	rows, err := q.db.Query(ctx, getUsersPaginated, arg.Offset, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

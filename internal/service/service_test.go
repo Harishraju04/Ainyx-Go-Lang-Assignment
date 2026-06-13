@@ -37,6 +37,14 @@ func (f *fakeRepo) ListAllUsers(ctx context.Context) ([]*repository.User, error)
 	return nil, nil
 }
 
+func (f *fakeRepo) ListAllUsersPaginated(ctx context.Context, offset int32, limit int32) ([]*repository.User, error) {
+	return nil, nil
+}
+
+func (f *fakeRepo) GetTotalUserCount(ctx context.Context) (int64, error) {
+	return 0, nil
+}
+
 func (f *fakeRepo) DeleteUser(ctx context.Context, id int32) error {
 	return nil
 }

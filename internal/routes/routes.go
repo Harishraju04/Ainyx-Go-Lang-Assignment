@@ -2,10 +2,14 @@ package routes
 
 import (
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/handler"
+	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 
 func SetUpRoutes(app *fiber.App, h *handler.Handler) {
+	// Global middleware
+	app.Use(middleware.RequestIDMiddleware)
+	app.Use(middleware.RequestDurationMiddleware)
 
 	api := app.Group("/api")
 

@@ -22,3 +22,11 @@ DELETE FROM users WHERE id = $1;
 
 -- name: ListAllUsers :many
 SELECT * from Users;
+
+-- name: GetUsersPaginated :many
+SELECT * FROM Users
+ORDER BY id
+OFFSET $1 LIMIT $2;
+
+-- name: CountUsers :one
+SELECT COUNT(*) FROM Users;
