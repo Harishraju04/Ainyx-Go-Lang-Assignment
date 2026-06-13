@@ -3,11 +3,12 @@ package repository
 import (
 	"context"
 	"errors"
-	"log"
 
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/db/sqlc"
+	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/logger"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/validator"
 	"github.com/jackc/pgx/v5"
+	"go.uber.org/zap"
 )
 
 func (repo *Repository) UpdateUser(ctx context.Context, req *UpdateUserRequest) (*User, error) {
@@ -23,9 +24,10 @@ func (repo *Repository) UpdateUser(ctx context.Context, req *UpdateUserRequest) 
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
+			logger.Logger.Debug("UpdateUser: no rows found", zap.Int32("id", req.Id))
 			return nil, pgx.ErrNoRows
 		}
-		log.Printf("repo UpdateUser: %s", err)
+		logger.Logger.Error("UpdateUser: database error", zap.Error(err), zap.Int32("id", req.Id))
 		return nil, err
 	}
 

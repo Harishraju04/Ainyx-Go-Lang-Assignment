@@ -7,6 +7,7 @@ import (
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/db"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/db/sqlc"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/handler"
+	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/logger"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/repository"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/routes"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/service"
@@ -16,6 +17,9 @@ import (
 
 func main() {
 	cfg := config.Load()
+
+	logger.Init()
+	defer logger.Logger.Sync()
 
 	pool := db.InitDB(cfg.DBurl)
 	defer pool.Close()

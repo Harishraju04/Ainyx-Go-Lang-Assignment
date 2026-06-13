@@ -3,11 +3,12 @@ package service
 import (
 	"context"
 	"errors"
-	"log"
 	"time"
 
+	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/logger"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/repository"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/validator"
+	"go.uber.org/zap"
 )
 
 func (svc *Service) UpdateUser(ctx context.Context, req *UpdateUserRequest) (*User, error) {
@@ -23,7 +24,7 @@ func (svc *Service) UpdateUser(ctx context.Context, req *UpdateUserRequest) (*Us
 	if req.Dob != nil {
 		parsedDob, err := ParseDate(*req.Dob)
 		if err != nil {
-			log.Printf("svc UpdateUser: %s", err)
+			logger.Logger.Error("UpdateUser: invalid date format", zap.Error(err))
 			return nil, err
 		}
 		dob = &parsedDob

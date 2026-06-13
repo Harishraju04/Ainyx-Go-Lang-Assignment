@@ -2,10 +2,11 @@ package db
 
 import (
 	"context"
-	"log"
 	"time"
 
+	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/logger"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"go.uber.org/zap"
 )
 
 func InitDB(dbURL string) *pgxpool.Pool {
@@ -14,13 +15,13 @@ func InitDB(dbURL string) *pgxpool.Pool {
 
 	pool, err := pgxpool.New(ctx, dbURL)
 	if err != nil {
-		log.Fatal(err)
+		logger.Logger.Fatal("Failed to create database pool", zap.Error(err))
 	}
 
 	if err := pool.Ping(ctx); err != nil {
-		log.Fatal(err)
+		logger.Logger.Fatal("Failed to ping database", zap.Error(err))
 	}
 
-	log.Printf("Db ping successful")
+	logger.Logger.Info("Database connection successful")
 	return pool
 }

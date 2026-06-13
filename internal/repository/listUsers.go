@@ -2,13 +2,15 @@ package repository
 
 import (
 	"context"
-	"log"
+
+	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/logger"
+	"go.uber.org/zap"
 )
 
 func (repo *Repository) ListAllUsers(ctx context.Context) ([]*User, error) {
 	res, err := repo.q.ListAllUsers(ctx)
 	if err != nil {
-		log.Printf("repo ListAllUsers %s", err)
+		logger.Logger.Error("ListAllUsers: database error", zap.Error(err))
 		return nil, err
 	}
 	var users []*User

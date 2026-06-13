@@ -2,10 +2,11 @@ package service
 
 import (
 	"context"
-	"log"
 
+	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/logger"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/repository"
 	"github.com/Harishraju04/Ainyx-Go-Lang-Assignment/internal/validator"
+	"go.uber.org/zap"
 )
 
 func (svc *Service) CreateUser(ctx context.Context, req *CreateUserRequest) (*User, error) {
@@ -15,7 +16,7 @@ func (svc *Service) CreateUser(ctx context.Context, req *CreateUserRequest) (*Us
 
 	dob, err := ParseDate(req.Dob)
 	if err != nil {
-		log.Printf("svc CreateUser: %s", err)
+		logger.Logger.Error("CreateUser: invalid date format", zap.Error(err))
 		return nil, err
 	}
 	res, err := svc.repo.CreateUser(ctx, &repository.CreateUserRequest{
