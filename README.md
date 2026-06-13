@@ -114,15 +114,6 @@ go run ./cmd/server
 - `http://localhost:8080/api/health`
 - `http://localhost:8080/api/users`
 
-## Docker
-
-Build and run the container:
-```bash
-docker build -t ainyx-api .
-docker run -e DATABASE_URL="postgres://ainyx:ainyxpass@db:5432/ainyx?sslmode=disable" -e PORT=":8080" -p 8080:8080 ainyx-api
-```
-
-> Note: `DATABASE_URL` must point to a running PostgreSQL instance.
 
 ## Notes
 
