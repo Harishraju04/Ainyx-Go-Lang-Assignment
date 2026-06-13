@@ -117,6 +117,4 @@ go run ./cmd/server
 - Validation errors return structured HTTP 400 responses.
 - The user list endpoint uses server-side pagination.
 
-## License
 
-This project is provided as-is. Update license details as needed.
