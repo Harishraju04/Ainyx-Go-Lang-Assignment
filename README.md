@@ -84,11 +84,6 @@ Required:
 Optional:
 - `PORT` — server port (default `:8080`)
 
-Example:
-```env
-DATABASE_URL=postgres://ainyx:ainyxpass@localhost:5432/ainyx?sslmode=disable
-PORT=:8080
-```
 
 ## Local Setup
 
@@ -100,7 +95,7 @@ cd ainyx-golang-api
 
 2. Create a `.env` file or export variables:
 ```env
-DATABASE_URL=postgres://ainyx:ainyxpass@localhost:5432/ainyx?sslmode=disable
+DATABASE_URL=<DATABASE_URL>
 PORT=:8080
 ```
 
